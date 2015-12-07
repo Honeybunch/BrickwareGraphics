@@ -1,3 +1,14 @@
+/**
+* \class RenderTexture
+* \ingroup BrickwareGraphics
+*
+* \brief A texture that can be rendered to
+*
+* A general purpose implementation of a RenderTarget or FrameBufferObject. 
+* This is less of an asset right now and more of a non-graphics specific 
+* render target.
+*/
+
 #ifndef RENDER_TEXTURE_H
 #define RENDER_TEXTURE_H
 
@@ -35,38 +46,42 @@ namespace Brickware
 			friend class RenderingManager;
 
 		public:
-			/* Creates a Render Tetxure of a given width and height
+			/** Creates a Render Tetxure of a given width and height
 			 * Assumes a depth of 16 bits
 			 * Assumes a texture format of RGBA
-			 * @width the width of the texture
-			 * @height the height of the texture
+			 * \param type the TextureType of the texture
+			 * \param width the width of the texture
+			 * \param height the height of the texture
 			 */
-			RenderTexture(unsigned int width, unsigned int height);
+			RenderTexture(TextureType type, unsigned int width, unsigned int height);
 
-			/* Creates a Render Tetxure of a given width, height and depth
-			* Assumes a texture format of RGBA
-			* @width the width of the texture
-			* @height the height of the texture
-			* @depth the bits in the depth buffer (0, 16 or 24)
-			*/
-			RenderTexture(unsigned int width, unsigned int height, unsigned int depth);
+			/** Creates a Render Tetxure of a given width, height and depth
+			 * Assumes a texture format of RGBA
+			 * \param type The TextureType of the texture
+			 * \param width The width of the texture
+			 * \param height The height of the texture
+			 * \param depth The bits in the depth buffer (0, 16 or 24)
+			 */
+			RenderTexture(TextureType type, unsigned int width, unsigned int height, unsigned int depth);
 
-			/* Creates a Render Tetxure of a given width, height, depth and texture format
-			* @width the width of the texture
-			* @height the height of the texture
-			* @depth the bits in the depth buffer (0, 16 or 24)
-			* @format the <TextureFormat> for the color buffer
-			*/
-			RenderTexture(unsigned int width, unsigned int height, unsigned int depth, TextureFormat format);
+			/** Creates a Render Tetxure of a given width, height, depth and texture format
+			 * \param type The TextureType of the texture
+			 * \param width The width of the texture
+			 * \param height The height of the texture
+			 * \param depth The bits in the depth buffer (0, 16 or 24)
+		 	 * \param format The TextureFormat for the color buffer
+			 */
+			RenderTexture(TextureType type, unsigned int width, unsigned int height, unsigned int depth, TextureFormat format);
 
-			//Binds the render texture to be drawn to
+			///Binds the render texture to be drawn to
 			void Bind();
 
-			//Unbinds the render texture
+			///Unbinds the render texture
 			void Free();
 
 			virtual ~RenderTexture();
 		private:
+			TextureType type;
 			unsigned int width;
 			unsigned int height;
 			unsigned int depth;

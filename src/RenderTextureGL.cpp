@@ -16,29 +16,63 @@ void RenderTexture::InitGL()
 	glGenFramebuffers(1, &frameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 
+	GLuint textureType = GL_TEXTURE_2D;
+
+	if (type == TextureType::TEX_3D)
+		textureType = GL_TEXTURE_3D;
+	else if (type == TextureType::TEX_CUBE_MAP)
+		textureType = GL_TEXTURE_CUBE_MAP;
+
 	//Setup depth texture if we wanted one
 	if (depth > 0)
 	{
 		glGenTextures(1, &depthBufferTexture);
-		glBindTexture(GL_TEXTURE_2D, depthBufferTexture);
+		glBindTexture(textureType, depthBufferTexture);
 	
 		GLint glDepth = GL_DEPTH_COMPONENT16;
 		if (depth == 24)
 			glDepth = GL_DEPTH_COMPONENT24;
 	
-		glTexImage2D(GL_TEXTURE_2D, 0, glDepth, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
-			depthBufferTexture, 0);
+		//Create internal texture based on settings
+		if (type == TextureType::TEX_2D)
+		{
+			glTexImage2D(textureType, 0, glDepth, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+		}
+		if (type == TextureType::TEX_3D)
+		{
+			//Not implemented
+			//glTexImage3D(textureType, 0, glDepth, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+		}
+		if (type == TextureType::TEX_CUBE_MAP)
+		{
+			for (unsigned int i = 0; i < 6; i++)
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
+				width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT,
+				NULL);
+		}
+		
+		glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		//Set texture to framebuffer based on texture type
+		if (type == TextureType::TEX_2D)
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBufferTexture, 0);
+		if (type == TextureType::TEX_3D)
+			glFramebufferTexture3D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_3D, depthBufferTexture, 0, 0);
+		if (type == TextureType::TEX_CUBE_MAP)
+			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthBufferTexture, 0);
+
+		// Check that the buffer is OK
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			std::cout << "RenderTexture depth buffer encountered an error!"
+			<< std::endl;
 	}
 
 	//Setup color texture
 	glGenTextures(1, &colorBufferTexture);
-	glBindTexture(GL_TEXTURE_2D, colorBufferTexture);
+	glBindTexture(textureType, colorBufferTexture);
 
 	GLint glFormat = GL_RGBA;
 
@@ -58,14 +92,35 @@ void RenderTexture::InitGL()
 		break;
 	}
 
-	glTexImage2D(GL_TEXTURE_2D, 0, glFormat, width, height, 0, glFormat, GL_FLOAT, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	//Create internal texture based on settings
+	if (type == TextureType::TEX_2D)
+	{
+		glTexImage2D(textureType, 0, glFormat, width, height, 0, glFormat, GL_FLOAT, 0);
+	}
+	if (type == TextureType::TEX_3D)
+	{
+		//Not implemented
+		//glTexImage3D(textureType, 0, glDepth, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	}
+	if (type == TextureType::TEX_CUBE_MAP)
+	{
+		for (unsigned int i = 0; i < 6; i++)
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glFormat,
+			width, height, 0, glFormat, GL_FLOAT,
+			NULL);
+	}
+	glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-		colorBufferTexture, 0);
+	//Set texture to framebuffer based on texture type
+	if (type == TextureType::TEX_2D)
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBufferTexture, 0);
+	if (type == TextureType::TEX_3D)
+		glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, colorBufferTexture, 0, 0);
+	if (type == TextureType::TEX_CUBE_MAP)
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, colorBufferTexture, 0);
 
 	//Draw to the first color attachment
 	glDrawBuffer(GL_COLOR_ATTACHMENT0);
@@ -76,7 +131,7 @@ void RenderTexture::InitGL()
 			<< std::endl;
 
 	// Unbind
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(textureType, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

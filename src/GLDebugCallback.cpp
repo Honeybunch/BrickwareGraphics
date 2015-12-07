@@ -82,6 +82,9 @@ extern "C" {
 			_type = "MARKER";
 			break;
 
+		case 131218: // NVIDIA: "shader will be recompiled due to GL state mismatches"
+			return;
+
 		default:
 			_type = "UNKNOWN";
 			break;

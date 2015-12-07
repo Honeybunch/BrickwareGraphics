@@ -25,6 +25,13 @@ namespace Brickware
 {
 	namespace Graphics
 	{
+		enum BRICKWARE_GRAPHICS_API TextureType
+		{
+			TEX_2D,
+			TEX_3D,
+			TEX_CUBE_MAP
+		};
+
 		enum BRICKWARE_GRAPHICS_API TextureFormat{
 			RGBA,
 			BGRA,

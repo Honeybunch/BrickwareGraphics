@@ -9,8 +9,9 @@ using namespace Graphics;
 	Public
 */
 
-RenderTexture::RenderTexture(unsigned int width, unsigned int height)
+RenderTexture::RenderTexture(TextureType type, unsigned int width, unsigned int height)
 {
+	this->type = type;
 	this->width = width;
 	this->height = height;
 	this->depth = 16;
@@ -19,8 +20,9 @@ RenderTexture::RenderTexture(unsigned int width, unsigned int height)
 	Init();
 }
 
-RenderTexture::RenderTexture(unsigned int width, unsigned int height, unsigned int depth)
+RenderTexture::RenderTexture(TextureType type, unsigned int width, unsigned int height, unsigned int depth)
 {
+	this->type = type;
 	this->width = width;
 	this->height = height;
 	this->depth = depth;
@@ -29,8 +31,9 @@ RenderTexture::RenderTexture(unsigned int width, unsigned int height, unsigned i
 	Init();
 }
 
-RenderTexture::RenderTexture(unsigned int width, unsigned int height, unsigned int depth, TextureFormat format)
+RenderTexture::RenderTexture(TextureType type, unsigned int width, unsigned int height, unsigned int depth, TextureFormat format)
 {
+	this->type = type;
 	this->width = width;
 	this->height = height;
 	this->depth = depth;

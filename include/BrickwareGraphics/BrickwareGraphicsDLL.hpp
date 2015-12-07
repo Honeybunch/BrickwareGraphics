@@ -1,3 +1,7 @@
+/**
+* \defgroup BrickwareGraphics
+*/
+
 #ifndef BRICKWARE_GRAPHICS_DLL_H
 #define BRICKWARE_GRAPHICS_DLL_H
 

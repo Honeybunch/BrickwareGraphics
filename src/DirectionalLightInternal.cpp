@@ -13,7 +13,7 @@ DirectionalLightInternal::DirectionalLightInternal() : InternalLight()
 
 	RenderingAPI renderer = GraphicsSettings::Renderer;
 
-	renderTexture = new RenderTexture(shadowMapRes, shadowMapRes, 16);
+	renderTexture = new RenderTexture(TextureType::TEX_2D, shadowMapRes, shadowMapRes, 16);
 
 	//Initialize based on rendering API
 	if (renderer = RenderingAPI::OpenGL)
