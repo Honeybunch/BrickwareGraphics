@@ -36,6 +36,7 @@ namespace Brickware
 #endif
 		template class BRICKWARE_GRAPHICS_API std::map < std::string, Texture* >;
 		template class BRICKWARE_GRAPHICS_API std::vector < Material* > ;
+		template class BRICKWARE_GRAPHICS_API std::vector < Math::Matrix4 >;
 
 		template class BRICKWARE_GRAPHICS_API std::map < std::string, Math::Vector2 > ;
 		template class BRICKWARE_GRAPHICS_API std::map < std::string, Math::Vector3 > ;
@@ -47,6 +48,7 @@ namespace Brickware
 								
 		template class BRICKWARE_GRAPHICS_API std::map < std::string, Math::Matrix3 > ;
 		template class BRICKWARE_GRAPHICS_API std::map < std::string, Math::Matrix4 > ;
+		template class BRICKWARE_GRAPHICS_API std::map < std::string, std::vector<Math::Matrix4> >;
 #endif
 		class BRICKWARE_GRAPHICS_API Material
 		{
@@ -77,6 +79,8 @@ namespace Brickware
 			void setMatrix4(std::string valueName, Math::Matrix4 value);
 			void setMatrix3(std::string valueName, Math::Matrix3 value);
 
+			void setMultipleMatrix4(std::string valueName, std::vector<Math::Matrix4> values);
+
 			void setTexture(std::string textureName, Texture* texture);
 
 			~Material();
@@ -94,6 +98,7 @@ namespace Brickware
 
 			std::map<std::string, Math::Matrix3> matrix3Map;
 			std::map<std::string, Math::Matrix4> matrix4Map;
+			std::map <std::string, std::vector<Math::Matrix4>> matrix4BatchMap;
 
 			std::map<std::string, Texture*> textureMap;
 

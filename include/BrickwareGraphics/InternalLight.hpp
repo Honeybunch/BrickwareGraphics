@@ -48,7 +48,6 @@ namespace Brickware
 			virtual ~InternalLight(void);
 
 		protected:
-
 			virtual void Init() = 0;
 
 			Math::Matrix4 depthVP;
@@ -58,10 +57,8 @@ namespace Brickware
 			Math::Vector3 diffuseColor;
 			Math::Vector3 specularColor;
 
-#ifdef GL_SUPPORT
-			GLuint shadowBuffer;
-			GLuint depthTexture;
-#endif
+			RenderTexture* renderTexture;
+			Material* shadowMaterial;
 
 			float shadowStrength;
 			float shadowBias;

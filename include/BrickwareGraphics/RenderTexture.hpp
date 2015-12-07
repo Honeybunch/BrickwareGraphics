@@ -27,6 +27,7 @@
 
 //Other Project Headers
 #include "BrickwareUtils/StringUtils.hpp"
+#include "BrickwareMath/Vector3.hpp"
 
 //System Level Headers
 

@@ -37,10 +37,13 @@ void RenderingManager::PreScenePassGL()
 	{
 		RenderPass pass = preScenePasses[i];
 		RenderTexture* renderTexture = pass.renderTexture;
-		Shader* shader = pass.shader;
+		Material* material = pass.material;
+		Shader* shader = material->shader;
 
 		renderTexture->Bind();
 		shader->bindGLSL();
+
+		material->sendDataToGPU();
 
 		shader->setMatrix4GL("viewMatrix", pass.view);
 		shader->setMatrix4GL("projectionMatrix", pass.projection);

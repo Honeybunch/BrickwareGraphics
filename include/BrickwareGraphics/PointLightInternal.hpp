@@ -31,8 +31,8 @@ namespace Brickware
 		struct CameraDirection
 		{
 			GLenum CubemapFace;
-			Vector3 Target;
-			Vector3 Up;
+			Math::Vector3 Target;
+			Math::Vector3 Up;
 		};
 #endif
 

@@ -34,7 +34,7 @@ namespace Brickware
 			Matrix4 view;
 			Matrix4 projection;
 			RenderTexture* renderTexture;
-			Shader* shader;
+			Material* material;
 		};
 
 #ifdef _WIN32

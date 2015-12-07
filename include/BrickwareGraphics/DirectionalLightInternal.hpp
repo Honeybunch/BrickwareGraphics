@@ -47,8 +47,6 @@ namespace Brickware
 			void (DirectionalLightInternal::*RenderShadowMapPtr)();
 			void (DirectionalLightInternal::*BindShadowMapPtr)(Shader* shader);
 
-			RenderTexture* renderTexture;
-
 #ifdef GL_SUPPORT
 			void InitGL();
 			void RenderShadowMapGL();

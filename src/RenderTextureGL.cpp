@@ -4,6 +4,7 @@
 
 using namespace Brickware;
 using namespace Graphics;
+using namespace Math;
 
 /*
 	All Private

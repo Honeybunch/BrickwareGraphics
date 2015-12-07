@@ -14,6 +14,7 @@ DirectionalLightInternal::DirectionalLightInternal() : InternalLight()
 	RenderingAPI renderer = GraphicsSettings::Renderer;
 
 	renderTexture = new RenderTexture(TextureType::TEX_2D, shadowMapRes, shadowMapRes, 16);
+	shadowMaterial = new Material(RenderingManager::DirectionalShadowShader);
 
 	//Initialize based on rendering API
 	if (renderer = RenderingAPI::OpenGL)
@@ -93,7 +94,7 @@ void DirectionalLightInternal::RenderShadowMap()
 	shadowPass.view = depthView;
 	shadowPass.projection = depthProjection;
 	shadowPass.renderTexture = renderTexture;
-	shadowPass.shader = RenderingManager::DirectionalShadowShader;
+	shadowPass.material = shadowMaterial;
 
 	RenderingManager::AddPreScenePass(shadowPass);
 }

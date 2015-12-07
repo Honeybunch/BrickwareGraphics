@@ -82,6 +82,11 @@ void Material::setMatrix3(std::string valueName, Matrix3 value)
 	matrix3Map[valueName] = value;
 }
 
+void Material::setMultipleMatrix4(std::string valueName, std::vector<Matrix4> values)
+{
+	matrix4BatchMap[valueName] = values;
+}
+
 void Material::setTexture(std::string textureName, Texture* texture)
 {
 	textureMap[textureName] = texture;
@@ -166,6 +171,16 @@ void Material::sendDataToGPU()
 #endif
 #ifdef D3D_SUPPORT
 		shader->setMatrix4D3D(iter.first.c_str(), iter.second);
+#endif
+	}
+
+	for (auto iter : matrix4BatchMap)
+	{
+#ifdef GL_SUPPORT
+		shader->setMultipleMatrix4GL(iter.first.c_str(), iter.second);
+#endif
+#ifdef D3D_SUPPORT
+		shader->setMultipleMatrix4D3D(iter.first.c_str(), iter.second);
 #endif
 	}
 

@@ -1,6 +1,7 @@
 #define BRICKWARE_GRAPHICS_EXPORTS
 
 #include "BrickwareGraphics/PointLightInternal.hpp"
+#include "BrickwareGraphics/RenderingManager.hpp"
 
 using namespace Brickware;
 using namespace Graphics;
@@ -17,6 +18,9 @@ PointLightInternal::PointLightInternal() : InternalLight()
 	LightCount++;
 
 	RenderingAPI renderer = GraphicsSettings::Renderer;
+
+	renderTexture = new RenderTexture(TextureType::TEX_CUBE_MAP, shadowMapRes, shadowMapRes, 16);
+	shadowMaterial = new Material(RenderingManager::PointShadowShader);
 
 	//Initialize based on rendering API
 	if (renderer = RenderingAPI::OpenGL)
