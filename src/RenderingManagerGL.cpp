@@ -5,6 +5,7 @@
 #include "BrickwareGraphics/RenderingManager.hpp"
 #include "BrickwareGraphics/RenderTexture.hpp"
 #include "BrickwareGraphics/Screen.hpp"
+#include "BrickwareGraphics/PrimitiveManager.hpp"
 
 using namespace Brickware;
 using namespace Graphics;
@@ -90,8 +91,13 @@ void RenderingManager::ScenePassGL()
 			RenderObjectGL(renderable.mesh, renderable.material);
 		}
 
+		//Render primitives
+		PrimitiveManager::DrawPrimitives(pass.view, pass.projection);
+
 		renderTexture->Free();
 	}
+
+	PrimitiveManager::ClearPrimitives();
 
 	Shader::ActiveShader->freeShader();
 

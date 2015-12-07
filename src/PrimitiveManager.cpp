@@ -82,8 +82,6 @@ void PrimitiveManager::DrawPrimitives(Math::Matrix4 viewMatrix, Math::Matrix4 pr
 		(*DrawPrimitivePtr)(p, pointShader);
 	}
 
-	pointShader->freeShader();
-
 	lineShader->bindShader();
 
 	for (unsigned int i = 0; i < LinePrimitives.size(); i++)
@@ -94,8 +92,6 @@ void PrimitiveManager::DrawPrimitives(Math::Matrix4 viewMatrix, Math::Matrix4 pr
 		//Draw with proper APIs
 		(*DrawPrimitivePtr)(p, lineShader);
 	}
-
-	lineShader->freeShader();
 }
 
 void PrimitiveManager::Destroy()
