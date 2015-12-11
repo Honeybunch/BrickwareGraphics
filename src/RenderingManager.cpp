@@ -2,6 +2,7 @@
 
 #include "BrickwareGraphics/RenderingManager.hpp"
 #include "BrickwareGraphics/GraphicsSettings.hpp"
+#include "BrickwareGraphics/Screen.hpp"
 
 using namespace Brickware;
 using namespace Graphics;
@@ -10,6 +11,8 @@ using namespace Graphics;
 Mesh* RenderingManager::internalScreen;
 
 Shader* RenderingManager::screenShader;
+Shader* RenderingManager::deferredShader;
+
 Material* RenderingManager::currentMaterial;
 Material* RenderingManager::currentShadowMaterial;
 
@@ -32,6 +35,8 @@ void(*RenderingManager::Render)();
 
 Shader* RenderingManager::DirectionalShadowShader = nullptr;
 Shader* RenderingManager::PointShadowShader = nullptr;
+
+GBuffer* RenderingManager::GraphicsBuffer = nullptr;
 
 void RenderingManager::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
@@ -70,6 +75,12 @@ void RenderingManager::Initialize(ID3D11Device* device, ID3D11DeviceContext* dev
 
 	//Shader to render the screen with
 	screenShader = new Shader("Shaders/ScreenVertex", "Shaders/ScreenPixel");
+
+	//Shader to compose the frames with
+	deferredShader = new Shader("Shaders/ScreenVertex", "Shaders/PixelShader");
+
+	//Setup GBuffer
+	GraphicsBuffer = new GBuffer(Screen::GetWidth(), Screen::GetHeight());
 
 	//Setup function pointers based on rendering API
 	if (renderer = RenderingAPI::OpenGL)
@@ -136,5 +147,11 @@ void RenderingManager::SetFinalRenderTarget(RenderTexture* renderTexture)
 
 void RenderingManager::Destroy()
 {
+	delete DirectionalShadowShader;
+	delete PointShadowShader;
 
+	delete internalScreen;
+	delete screenShader;
+
+	delete GraphicsBuffer;
 }

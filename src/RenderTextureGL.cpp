@@ -1,6 +1,7 @@
 #define BRICKWARE_GRAPHICS_EXPORTS
 
 #include "BrickwareGraphics/RenderTexture.hpp"
+#include "BrickwareUtils/Logger.hpp"
 
 using namespace Brickware;
 using namespace Graphics;
@@ -67,36 +68,40 @@ void RenderTexture::InitGL()
 
 		// Check that the buffer is OK
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			std::cout << "RenderTexture depth buffer encountered an error!"
-			<< std::endl;
+			Utility::Logger::Log("RenderTexture depth buffer encountered an error!");
 	}
 
-	//Setup color texture
+
 	glGenTextures(1, &colorBufferTexture);
 	glBindTexture(textureType, colorBufferTexture);
 
-	GLint glFormat = GL_RGBA;
+	GLint glInternalFormat = GL_RGB16F;
+	GLint glInputFormat = GL_RGBA;
 
 	switch (format)
 	{
 	case TextureFormat::RGBA:
-		glFormat = GL_RGBA;
+		glInputFormat = GL_RGBA;
+		glInternalFormat = GL_RGBA;
 		break;
 	case TextureFormat::BGRA:
-		glFormat = GL_BGRA;
+		glInputFormat = GL_BGRA;
+		glInternalFormat = GL_BGRA;
 		break;
 	case TextureFormat::RGB:
-		glFormat = GL_RGB;
+		glInternalFormat = GL_RGB16F;
+		glInputFormat = GL_RGB;
 		break;
 	case TextureFormat::BGR:
-		glFormat = GL_BGR;
+		glInternalFormat = GL_RGB16F;
+		glInputFormat = GL_RGB;
 		break;
 	}
 
 	//Create internal texture based on settings
 	if (type == TextureType::TEX_2D)
 	{
-		glTexImage2D(textureType, 0, glFormat, width, height, 0, glFormat, GL_FLOAT, 0);
+		glTexImage2D(textureType, 0, glInternalFormat, width, height, 0, glInputFormat, GL_FLOAT, 0);
 	}
 	if (type == TextureType::TEX_3D)
 	{
@@ -106,9 +111,9 @@ void RenderTexture::InitGL()
 	if (type == TextureType::TEX_CUBE_MAP)
 	{
 		for (unsigned int i = 0; i < 6; i++)
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glFormat,
-			width, height, 0, glFormat, GL_FLOAT,
-			NULL);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glInternalFormat,
+				width, height, 0, glInputFormat, GL_FLOAT,
+				NULL);
 	}
 	glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -123,13 +128,12 @@ void RenderTexture::InitGL()
 	if (type == TextureType::TEX_CUBE_MAP)
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, colorBufferTexture, 0);
 
-	//Draw to the first color attachment
+	//Tell OpenGL which buffers to draw to
 	glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
 	// Check that the buffer is OK
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "RenderTexture framebuffer encountered an error!"
-			<< std::endl;
+		Utility::Logger::Log("RenderTexture color buffer encountered an error!");
 
 	// Unbind
 	glBindTexture(textureType, 0);

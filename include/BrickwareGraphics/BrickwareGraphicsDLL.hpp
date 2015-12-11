@@ -7,6 +7,9 @@
 
 #ifdef _WIN32
 
+//Disable warnings that shouldn't appear in VS2015
+#pragma warning (disable : 4251)
+
 #ifdef BRICKWARE_GRAPHICS_EXPORTS
 #	define BRICKWARE_GRAPHICS_API __declspec(dllexport)
 #else

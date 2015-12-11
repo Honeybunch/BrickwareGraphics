@@ -12,6 +12,7 @@
 #include "BrickwareGraphics/PointLightInternal.hpp"
 #include "BrickwareGraphics/GraphicsSettings.hpp"
 #include "BrickwareGraphics/RendererInfo.hpp"
+#include "BrickwareGraphics/GBuffer.hpp"
 
 namespace Brickware
 {
@@ -31,6 +32,7 @@ namespace Brickware
 
 		struct RenderPass
 		{
+			Vector3 eyePoint;
 			Matrix4 view;
 			Matrix4 projection;
 			RenderTexture* renderTexture;
@@ -70,6 +72,8 @@ namespace Brickware
 
 			static Shader* DirectionalShadowShader;
 			static Shader* PointShadowShader;
+
+			static GBuffer* GraphicsBuffer;
 		private:
 
 #ifdef GL_SUPPORT
@@ -93,6 +97,7 @@ namespace Brickware
 #endif
 			static Mesh* internalScreen;
 			static Shader* screenShader;
+			static Shader* deferredShader;
 
 			static Material* currentMaterial;
 			static Material* currentShadowMaterial;

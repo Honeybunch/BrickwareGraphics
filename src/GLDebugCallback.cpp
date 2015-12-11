@@ -116,10 +116,6 @@ extern "C" {
 		{
 			std::string error = std::to_string(id) + ": " + _type + " of " + _severity + " severity, raised from " + _source + ": " + msg + "\n";
 
-			//Live log the error to the console if we're in debug mode
-#ifdef BRICKWARE_DEBUG
-			printf(error.c_str());
-#endif
 			//Log the error to a file
 			Brickware::Utility::Logger::Log(error);
 		}

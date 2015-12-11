@@ -69,7 +69,7 @@ void RenderingManager::ScenePassGL()
 		RenderPass pass = scenePasses[i];
 		RenderTexture* renderTexture = pass.renderTexture;
 
-		renderTexture->Bind();
+		GraphicsBuffer->WriteBind();
 
 		// Render every renderable object
 		for (unsigned int j = 0; j < renderables.size(); j++) {
@@ -82,20 +82,35 @@ void RenderingManager::ScenePassGL()
 
 				shader->setMatrix4GL("viewMatrix", pass.view);
 				shader->setMatrix4GL("projectionMatrix", pass.projection);
-
-				// Send light data to the shader
-				for (unsigned int j = 0; j < lights.size(); j++) {
-					lights[j]->RenderLight(shader);
-					lights[j]->BindShadowMap(shader);
-				}
 			}
 
 			// Render object
 			RenderObjectGL(renderable.mesh, renderable.material);
 		}
 
+		renderTexture->Bind();
+
+		GraphicsBuffer->ReadBind();
+
 		//Render primitives
 		PrimitiveManager::DrawPrimitives(pass.view, pass.projection);
+
+		//Render to texture
+		deferredShader->bindGLSL();
+
+		// Send light data to the shader
+		for (unsigned int j = 0; j < lights.size(); j++) {
+			lights[j]->RenderLight(deferredShader);
+			//lights[j]->BindShadowMap(deferredShader);
+		}
+
+		deferredShader->setVector3GL("eyePosition", pass.eyePoint);
+
+		// Draw nothing but 3 "verticies"
+		glBindVertexArray(internalScreen->getVAO());
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		deferredShader->freeGLSL();
 
 		renderTexture->Free();
 	}
@@ -111,13 +126,12 @@ void RenderingManager::ScenePassGL()
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glClearColor(0, 1, 0, 1);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 	//Render screen
 	screenShader->bindGLSL();
 
-	//Bind final image
+	//Bind frame;
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, finalRenderTexture->colorBufferTexture);
 
@@ -127,6 +141,11 @@ void RenderingManager::ScenePassGL()
 
 	screenShader->freeGLSL();
 
+	//Unbind frame
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	//Unbind VAO
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
