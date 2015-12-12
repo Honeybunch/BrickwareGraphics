@@ -12,6 +12,7 @@ void GBuffer::InitGL()
 	//Create textures
 	colorBufferTextures = new GLuint[colorBufferCount];
 	glGenTextures(colorBufferCount, colorBufferTextures);
+	glGenTextures(1, &depthBuffer);
 
 	//Position texture
 	glBindTexture(GL_TEXTURE_2D, colorBufferTextures[0]);
@@ -34,13 +35,20 @@ void GBuffer::InitGL()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, colorBufferTextures[2], 0);
 
+	//Depth buffer
+	glBindTexture(GL_TEXTURE_2D, depthBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBuffer, 0);
+
 	//Make sure to draw all color attachments
 	GLuint attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(3, attachments);
 
 	// Check that the buffer is OK
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		Utility::Logger::Log("GBuffer encountered an error!");
+		Utility::Logger::Log("GBuffer color buffer encountered an error!");
 }
 
 void GBuffer::WriteBindGL()

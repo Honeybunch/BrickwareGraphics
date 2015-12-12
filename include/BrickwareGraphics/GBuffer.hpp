@@ -56,11 +56,12 @@ namespace Brickware {
 			//Inits the GBuffer based on rendering API
 			void Init();
 
-			const int colorBufferCount = 3;
+			const unsigned int colorBufferCount = 3;
 
 			//GL specific methods
 #ifdef GL_SUPPORT
 			GLuint frameBuffer;
+			GLuint depthBuffer;
 			GLuint* colorBufferTextures;
 
 			///Init the GBuffer with OpenGL

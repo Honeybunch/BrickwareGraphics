@@ -74,6 +74,6 @@ void PointLightInternal::BindShadowMapGL(Shader *shader)
 	shader->setGlobalFloat(farPlaneString.c_str(), farPlane);
 	
 	// Bind shadow map
-	glActiveTexture(GL_TEXTURE2);
+	glActiveTexture(GL_TEXTURE4 + lightIndex);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, renderTexture->depthBufferTexture);
 }

@@ -101,7 +101,7 @@ void RenderingManager::ScenePassGL()
 		// Send light data to the shader
 		for (unsigned int j = 0; j < lights.size(); j++) {
 			lights[j]->RenderLight(deferredShader);
-			//lights[j]->BindShadowMap(deferredShader);
+			lights[j]->BindShadowMap(deferredShader);
 		}
 
 		deferredShader->setVector3GL("eyePosition", pass.eyePoint);
@@ -131,7 +131,7 @@ void RenderingManager::ScenePassGL()
 	//Render screen
 	screenShader->bindGLSL();
 
-	//Bind frame;
+	//Bind frame
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, finalRenderTexture->colorBufferTexture);
 

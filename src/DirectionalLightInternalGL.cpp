@@ -19,6 +19,6 @@ void DirectionalLightInternal::RenderShadowMapGL()
 void DirectionalLightInternal::BindShadowMapGL(Shader *shader) {
   shader->setGlobalMatrix4("depthBiasVP", depthBiasVP);
 
-  glActiveTexture(GL_TEXTURE1);
+  glActiveTexture(GL_TEXTURE3);
   glBindTexture(GL_TEXTURE_2D, renderTexture->depthBufferTexture);
 }
